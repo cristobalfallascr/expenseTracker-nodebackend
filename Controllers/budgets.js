@@ -66,6 +66,7 @@ exports.postCreateBudget = (req, res, next) => {
     budgetOwners: budgetOwners,
     expenseList: expenseList,
     expenseCount: 0,
+    userId:req.user
   });
   //Attempt saving budget
   budget
