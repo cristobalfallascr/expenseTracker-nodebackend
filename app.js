@@ -1,9 +1,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+require("dotenv").config();
+
 const User = require("./models/userModel");
 
 const app = express();
+const connectURI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_SEC}@cluster0.1wlk1.mongodb.net/budgetAppDB?retryWrites=true&w=majority`;
+console.log(connectURI);
 
 //No need to set view engine as we will work with REST APIs
 //app.set('view engine', 'ejs');
@@ -27,7 +31,6 @@ app.use((req, res, next) => {
       next();
     })
     .catch((err) => console.log(err));
-    
 });
 
 // To enable CORS operations
@@ -49,9 +52,7 @@ app.use((req, res, next) => {
 });
 
 mongoose
-  .connect(
-    "mongodb+srv://bcNdeUsr:EBkOKbB5Qs9UGXjA@cluster0.1wlk1.mongodb.net/budgetAppDB?retryWrites=true&w=majority"
-  )
+  .connect(connectURI)
   .then((result) => {
     User.findOne().then((user) => {
       if (!user) {
