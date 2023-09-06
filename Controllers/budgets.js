@@ -3,6 +3,7 @@ const expenses = [];
 const { validationResult } = require("express-validator"); // reads the validation result as configured in the Routes
 
 const Budget = require("../models/budgetModel");
+const Expense = require("../models/expenseModel");
 
 exports.getBudget = (req, res, next) => {
   res.status(200).json({
@@ -35,8 +36,7 @@ exports.getAddExpense = (req, res, next) => {
   });
 };
 
-//Post expenses
-
+//POST  Create Budget
 exports.postCreateBudget = (req, res, next) => {
   //Validation of input
   const errors = validationResult(req);
@@ -66,7 +66,7 @@ exports.postCreateBudget = (req, res, next) => {
     budgetOwners: budgetOwners,
     expenseList: expenseList,
     expenseCount: 0,
-    userId:req.user
+    userId: req.user,
   });
   //Attempt saving budget
   budget
@@ -76,6 +76,47 @@ exports.postCreateBudget = (req, res, next) => {
         message: "Post created successfully",
         date: createdDate,
         budget: result,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+//POST Add an expense
+exports.postAddExpense = (req, res, next) => {
+  //Validation of input
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      message: "Validation failed",
+      errors: errors.array(),
+    });
+  }
+  console.log(req.body);
+  const title = req.body.title;
+  const budgetedAmount = req.body.budgetedAmount;
+  const usedAmount = 0;
+  const availableAmount = budgetedAmount - usedAmount;
+  const records = 1;
+  const budgetId = {}
+
+  const expense = new Expense({
+    title: title,
+    budgetedAmount: budgetedAmount,
+    usedAmount: usedAmount,
+    availableAmount: availableAmount,
+    records: records,
+    // budgetId: budgetId,
+    userId: req.user,
+  });
+
+  expense
+    .save()
+    .then((result) => {
+      res.status(201).json({
+        message: "Expense created successfully",
+        expense: result,
       });
     })
     .catch((err) => {

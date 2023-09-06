@@ -13,7 +13,7 @@ const budgetSchema = new Schema(
     },
     expenseCount: {
       type: Number,
-      required: true
+      required: true,
     },
     budgetTotalAmount: {
       type: Number,
@@ -28,11 +28,19 @@ const budgetSchema = new Schema(
       required: true,
     },
     expenseList: {
-      type: Object,
+      expenses: [
+        {
+          expenseId: {
+            type: Schema.Types.ObjectId,
+            ref: "Budget",
+            required: true,
+          },
+        },
+      ],
     },
     userId: {
       type: Schema.Types.ObjectId,
-      ref:"User",
+      ref: "User",
       required: true,
     },
   },

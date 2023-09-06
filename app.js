@@ -7,7 +7,7 @@ const User = require("./models/userModel");
 
 const app = express();
 const connectURI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_SEC}@cluster0.1wlk1.mongodb.net/budgetAppDB?retryWrites=true&w=majority`;
-console.log(connectURI);
+
 
 //No need to set view engine as we will work with REST APIs
 //app.set('view engine', 'ejs');

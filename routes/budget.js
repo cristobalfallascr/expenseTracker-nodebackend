@@ -23,4 +23,12 @@ router.post(
   budgetsController.postCreateBudget
 );
 
+//POST /budget/add-expense
+router.post("/add-expense", [
+  body("title").trim().isLength({ min: 5 }),
+  body("budgetedAmount").notEmpty().isInt(),
+  // body("usedAmout").notEmpty().isInt(),
+  // body("availableAmount").notEmpty().isInt(),
+], budgetsController.postAddExpense);
+
 module.exports = router;
