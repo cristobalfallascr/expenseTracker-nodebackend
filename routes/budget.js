@@ -2,7 +2,7 @@ const express = require("express");
 const { body } = require("express-validator"); // using body method from express validator
 
 const budgetsController = require("../Controllers/budgets");
-const expenseData = require("./expenses");
+const expenseData = require("../archive/expenses");
 
 const router = express.Router();
 
@@ -24,11 +24,22 @@ router.post(
 );
 
 //POST /budget/add-expense
-router.post("/add-expense", [
-  body("title").trim().isLength({ min: 5 }),
-  body("budgetedAmount").notEmpty().isInt(),
-  // body("usedAmout").notEmpty().isInt(),
-  // body("availableAmount").notEmpty().isInt(),
-], budgetsController.postAddExpense);
+router.post(
+  "/add-expense",
+  [
+    body("title").trim().isLength({ min: 5 }),
+    body("budgetedAmount").notEmpty().isInt(),
+    // body("usedAmout").notEmpty().isInt(),
+    // body("availableAmount").notEmpty().isInt(),
+  ],
+  budgetsController.postAddExpense
+);
+
+//POST /budget/add-transacton
+router.post(
+  "/add-transaction",
+  [body("usedAmount").notEmpty().isInt()],
+  budgetsController.postAddTransation
+);
 
 module.exports = router;

@@ -4,18 +4,17 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 const User = require("./models/userModel");
+const Budget = require("./models/budgetModel");
+const Expense = require("./models/expenseModel");
 
 const app = express();
 const connectURI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_SEC}@cluster0.1wlk1.mongodb.net/budgetAppDB?retryWrites=true&w=majority`;
-
 
 //No need to set view engine as we will work with REST APIs
 //app.set('view engine', 'ejs');
 //app.set('views', 'views');
 
-const adminData = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
-const expenseRoutes = require("./routes/expenses");
+
 const budgetRoutes = require("./routes/budget");
 
 //No need for parsing URL encoded
@@ -33,6 +32,28 @@ app.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
+// to save a budget in request
+app.use((req, res, next) => {
+  Budget.findById("64f61b353635dbea7a8acabc")
+    .then((budget) => {
+      console.log(budget);
+      req.budget = budget;
+      next();
+    })
+    .catch((err) => console.log(err));
+});
+
+// to save a expense in request
+app.use((req, res, next) => {
+  Expense.findById("64fa3c76f785157f3bd3d2a1")
+    .then((expense) => {
+      console.log(expense);
+      req.expense = expense;
+      next();
+    })
+    .catch((err) => console.log(err));
+});
+
 // To enable CORS operations
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -44,7 +65,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/admin", adminData.routes);
+
 app.use("/budgets", budgetRoutes);
 
 app.use((req, res, next) => {

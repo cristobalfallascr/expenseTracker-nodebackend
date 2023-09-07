@@ -10,6 +10,15 @@ const expenseSchema = new Schema(
       type: String,
       required: true,
     },
+    type: {
+      type: String,
+      required: true,
+    },
+
+    description: {
+      type: String,
+      required: true,
+    },
 
     budgetedAmount: { type: Number, required: true },
     usedAmount: { type: Number, required: true },

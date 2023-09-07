@@ -4,6 +4,7 @@ const { validationResult } = require("express-validator"); // reads the validati
 
 const Budget = require("../models/budgetModel");
 const Expense = require("../models/expenseModel");
+const Transaction = require("../models/transactionModel");
 
 exports.getBudget = (req, res, next) => {
   res.status(200).json({
@@ -48,6 +49,7 @@ exports.postCreateBudget = (req, res, next) => {
   }
 
   const title = req.body.title;
+  const type = req.body.type;
   const description = req.body.description;
   const budgetTotalAmount = req.body.budgetTotalAmount;
   const budgetOwners = {};
@@ -93,16 +95,20 @@ exports.postAddExpense = (req, res, next) => {
       errors: errors.array(),
     });
   }
-  console.log(req.body);
+
   const title = req.body.title;
   const budgetedAmount = req.body.budgetedAmount;
+  const type = req.body.type;
+  const description = req.body.description;
   const usedAmount = 0;
   const availableAmount = budgetedAmount - usedAmount;
   const records = 1;
-  const budgetId = {}
+  const budgetId = {};
 
   const expense = new Expense({
     title: title,
+    type: type,
+    description: description,
     budgetedAmount: budgetedAmount,
     usedAmount: usedAmount,
     availableAmount: availableAmount,
@@ -117,6 +123,41 @@ exports.postAddExpense = (req, res, next) => {
       res.status(201).json({
         message: "Expense created successfully",
         expense: result,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+//POST a transaction on an expense
+exports.postAddTransation = (req, res, next) => {
+  //Validation of input
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({
+      message: "Validation failed",
+      errors: errors.array(),
+    });
+  }
+
+  const usedAmount = req.body.usedAmount;
+  const expenseId = req.body.expenseId;
+  const userId = req.body.userId;
+  const record = 1;
+
+  const transaction = new Transaction({
+    usedAmount: usedAmount,
+    expenseId: req.expense,
+    userId: req.user,
+  });
+
+  transaction
+    .save()
+    .then((result) => {
+      res.status(201).json({
+        message: "Transaction created successfully",
+        transation: result,
       });
     })
     .catch((err) => {
