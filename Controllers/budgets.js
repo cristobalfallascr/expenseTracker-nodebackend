@@ -7,22 +7,9 @@ const Expense = require("../models/expenseModel");
 const Transaction = require("../models/transactionModel");
 
 exports.getBudget = (req, res, next) => {
-  res.status(200).json({
-    _id: 12345,
-    title: "2023 Budget",
-    description: "This is the budget",
-    expenseCount: 13,
-    budgetTotalAmount: 2000,
-    budgetAmountUsed: 1300,
-    budgetAmountAvailable: 700,
-    expenseList: {
-      title: "Abarrotes",
-      description: "compras en supermercado",
-      registros: 3,
-      budgetedAmount: 450,
-      budgetedAmountUsed: 300,
-      budgetedAmountAvailable: 100,
-    },
+  Budget.findById(req.budget._id).then((budget) => {
+    console.log(budget);
+    res.status(200).json({ message: "sucess", budget: budget });
   });
 };
 
@@ -103,7 +90,7 @@ exports.postAddExpense = (req, res, next) => {
   const usedAmount = 0;
   const availableAmount = budgetedAmount - usedAmount;
   const records = 1;
-  const budgetId = {};
+  const budgetId = req.budget;
 
   const expense = new Expense({
     title: title,
@@ -113,7 +100,8 @@ exports.postAddExpense = (req, res, next) => {
     usedAmount: usedAmount,
     availableAmount: availableAmount,
     records: records,
-    // budgetId: budgetId,
+    budgetId: budgetId,
+
     userId: req.user,
   });
 

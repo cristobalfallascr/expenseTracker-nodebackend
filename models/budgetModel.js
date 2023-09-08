@@ -32,7 +32,7 @@ const budgetSchema = new Schema(
         {
           expenseId: {
             type: Schema.Types.ObjectId,
-            ref: "Budget",
+            ref: "Expense",
             required: true,
           },
         },
