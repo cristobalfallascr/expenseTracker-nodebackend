@@ -8,10 +8,10 @@ const router = express.Router();
 
 //////// GET ROUTES
 //GET /budgets/my-budgets
-router.get("/my-budget", budgetsController.getBudget);
+// router.get("/my-budget", budgetsController.getBudget);
+router.get("/my-budget/:budgetCode", budgetsController.getBudget);
 //GET /budgets/add-expense
 router.get("/add-expense", budgetsController.getAddExpense);
-
 
 //////// POST ROUTES
 //POST /budgets/create-budget

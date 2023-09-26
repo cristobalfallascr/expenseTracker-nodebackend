@@ -14,7 +14,6 @@ const connectURI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_SEC}@c
 //app.set('view engine', 'ejs');
 //app.set('views', 'views');
 
-
 const budgetRoutes = require("./routes/budget");
 
 //No need for parsing URL encoded
@@ -24,7 +23,7 @@ app.use(bodyParser.json()); // to parse application/json
 
 //to save a user in the request
 app.use((req, res, next) => {
-  User.findById("64f79b91c5a80d4a22171518")
+  User.findById("6509a88eebdb6e09dad043b0")
     .then((user) => {
       req.user = user;
       next();
@@ -33,26 +32,25 @@ app.use((req, res, next) => {
 });
 
 // to save a budget in request
-app.use((req, res, next) => {
-  Budget.findById("64fa6509801917f05a09c671")
-    .then((budget) => {
-      console.log(budget);
-      req.budget = budget;
-      next();
-    })
-    .catch((err) => console.log(err));
-});
+// app.use((req, res, next) => {
+//   Budget.findById("650ce601d0bd248dfe0d8b88")
+//     .then((budget) => {
+//       req.budget = budget;
+//       next();
+//     })
+//     .catch((err) => console.log(err)); 
+// });
 
 // to save a expense in request
-app.use((req, res, next) => {
-  Expense.findById("64fa3c76f785157f3bd3d2a1")
-    .then((expense) => {
-      console.log(expense);
-      req.expense = expense;
-      next();
-    })
-    .catch((err) => console.log(err));
-});
+// app.use((req, res, next) => {
+//   Expense.findById("64fa3c76f785157f3bd3d2a1")
+//     .then((expense) => {
+//       console.log(expense);
+//       req.expense = expense;
+//       next();
+//     })
+//     .catch((err) => console.log(err));
+// });
 
 // To enable CORS operations
 app.use((req, res, next) => {
@@ -64,7 +62,6 @@ app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   next();
 });
-
 
 app.use("/budgets", budgetRoutes);
 
@@ -87,9 +84,7 @@ mongoose
 
         user
           .save()
-          .then((result) => {
-            console.log(result);
-          })
+          .then((result) => {})
           .catch((err) => {
             console.log(err);
           });

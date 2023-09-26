@@ -24,13 +24,20 @@ const expenseSchema = new Schema(
     usedAmount: { type: Number, required: true },
     availableAmount: { type: Number, required: true },
     createdBy: { type: String },
-    records: { type: Number, required: true },
+
     budgetId: {
       type: Schema.Types.ObjectId,
       ref: "Budget",
       required: true,
     },
-
+    transactions: { type: Number, required: true },
+    transactionList: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Transaction",
+        required: false,
+      },
+    ],
     userId: {
       type: Schema.Types.ObjectId,
       ref: "User",
