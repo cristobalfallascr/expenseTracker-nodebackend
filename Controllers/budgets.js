@@ -9,7 +9,6 @@ const Transaction = require("../models/transactionModel");
 
 exports.getBudget = (req, res, next) => {
   const budgetCode = req.params.budgetCode;
-  console.log(req.params);
 
   Budget.findOne({ budgetCode: budgetCode })
     .populate("expenseList")
@@ -20,7 +19,12 @@ exports.getBudget = (req, res, next) => {
           searchCode: budgetCode,
         });
       } else {
-        res.status(200).json({ message: "Budget retrieved successfully!", budget: foundBudget });
+        res
+          .status(200)
+          .json({
+            message: "Budget retrieved successfully!",
+            budget: foundBudget,
+          });
       }
     });
   // Budget.findById(req.budget._id)
@@ -129,7 +133,7 @@ exports.postAddExpense = (req, res, next) => {
   const usedAmount = 0;
   const availableAmount = budgetedAmount - usedAmount;
   const transactions = 0;
-  const budgetId = req.budget;
+  const budgetId = req.body.budgetId;
   const transactionList = [];
 
   //define new budget amount
