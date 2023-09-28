@@ -7,7 +7,7 @@
     "start": "node app.js",
     "start:dev": "nodemon app.js",
     "start-server": "node app.js",
-    "test": "Echo 'Error: no test specified' && exit 1"
+    "test": "nodemon app.js"
   },
   "author": "Cristobal",
   "license": "ISC",
@@ -22,6 +22,7 @@
     "express": "^4.16.3",
     "express-validator": "^7.0.1",
     "helmet": "^7.0.0",
-    "mongoose": "^7.5.0"
+    "mongoose": "^7.5.0",
+    "morgan": "^1.10.0"
   }
 }

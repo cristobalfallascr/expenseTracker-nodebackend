@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 const helmet = require("helmet");
 const compression = require("compression");
+const morgan = require("morgan");
+const fs = require("fs");
 
 const User = require("./models/userModel");
 const Budget = require("./models/budgetModel");
@@ -17,8 +19,14 @@ const connectURI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_SEC}@c
 //app.set('views', 'views');
 
 const budgetRoutes = require("./routes/budget");
+
+// const accessLogStream = fs.createWriteStream(
+//   path.join(__dirname, "access.log"),
+//   { flags: "a" }
+// );
 app.use(helmet());
 app.use(compression());
+// app.use(morgan("combined", {stream: accessLogStream}));
 
 // app.use((req, res, next) => {
 //   res.setHeader("Access-Control-Allow-Origin", "*");
