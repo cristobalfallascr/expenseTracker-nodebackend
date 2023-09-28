@@ -1,0 +1,9 @@
+{
+  "env": {
+    "DB_USER": "bcNdeUsr",
+    "DB_SEC": "EBkOKbB5Qs9UGXjA",
+    "LISPORT": "3000",
+    "DBNAME": "budgetAppDB"
+  }
+}
+

@@ -2,19 +2,33 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const helmet = require("helmet");
+const compression = require("compression");
 
 const User = require("./models/userModel");
 const Budget = require("./models/budgetModel");
 const Expense = require("./models/expenseModel");
 
 const app = express();
-const connectURI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_SEC}@cluster0.1wlk1.mongodb.net/budgetAppDB?retryWrites=true&w=majority`;
+const connectURI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_SEC}@cluster0.1wlk1.mongodb.net/${process.env.DBNAME}?retryWrites=true&w=majority`;
 
 //No need to set view engine as we will work with REST APIs
 //app.set('view engine', 'ejs');
 //app.set('views', 'views');
 
 const budgetRoutes = require("./routes/budget");
+app.use(helmet());
+app.use(compression());
+
+// app.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.setHeader(
+//     "Access-Control-Allow-Methods",
+//     "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+//   );
+//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   next();
+// }
 
 //No need for parsing URL encoded
 //app.use(bodyParser.urlencoded({ extended: false }));
@@ -38,7 +52,7 @@ app.use((req, res, next) => {
 //       req.budget = budget;
 //       next();
 //     })
-//     .catch((err) => console.log(err)); 
+//     .catch((err) => console.log(err));
 // });
 
 // to save a expense in request
@@ -91,7 +105,7 @@ mongoose
       }
     });
 
-    app.listen(process.env.LISPORT);
+    app.listen(process.env.PORT || process.env.LISPORT);
     console.log("Server running with DB Connection");
   })
   .catch((err) => {
