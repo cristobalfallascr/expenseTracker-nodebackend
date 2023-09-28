@@ -5,6 +5,7 @@ require("dotenv").config();
 const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
+const path = require("path");
 const fs = require("fs");
 
 const User = require("./models/userModel");
@@ -14,32 +15,17 @@ const Expense = require("./models/expenseModel");
 const app = express();
 const connectURI = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_SEC}@cluster0.1wlk1.mongodb.net/${process.env.DBNAME}?retryWrites=true&w=majority`;
 
-//No need to set view engine as we will work with REST APIs
-//app.set('view engine', 'ejs');
-//app.set('views', 'views');
 
 const budgetRoutes = require("./routes/budget");
 
-// const accessLogStream = fs.createWriteStream(
-//   path.join(__dirname, "access.log"),
-//   { flags: "a" }
-// );
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flags: "a" }
+);
 app.use(helmet());
 app.use(compression());
-// app.use(morgan("combined", {stream: accessLogStream}));
+app.use(morgan("combined", {stream: accessLogStream}));
 
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", "*");
-//   res.setHeader(
-//     "Access-Control-Allow-Methods",
-//     "OPTIONS, GET, POST, PUT, PATCH, DELETE"
-//   );
-//   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//   next();
-// }
-
-//No need for parsing URL encoded
-//app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(bodyParser.json()); // to parse application/json
 
@@ -53,26 +39,6 @@ app.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
-// to save a budget in request
-// app.use((req, res, next) => {
-//   Budget.findById("650ce601d0bd248dfe0d8b88")
-//     .then((budget) => {
-//       req.budget = budget;
-//       next();
-//     })
-//     .catch((err) => console.log(err));
-// });
-
-// to save a expense in request
-// app.use((req, res, next) => {
-//   Expense.findById("64fa3c76f785157f3bd3d2a1")
-//     .then((expense) => {
-//       console.log(expense);
-//       req.expense = expense;
-//       next();
-//     })
-//     .catch((err) => console.log(err));
-// });
 
 // To enable CORS operations
 app.use((req, res, next) => {
