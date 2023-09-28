@@ -6,9 +6,10 @@
   "scripts": {
     
     "start": "nodemon app.js",
-    "start-server": "node app.js"
+    "start-server": "node app.js",
+    "test": "Echo 'Error: no test specified' && exit 1"
   },
-  "author": "Cristobal Fallas",
+  "author": "Cristobal",
   "license": "ISC",
   "devDependencies": {
     "nodemon": "^3.0.1"
