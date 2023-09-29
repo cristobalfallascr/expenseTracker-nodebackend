@@ -202,7 +202,7 @@ exports.postAddTransation = (req, res, next) => {
   const description = req.body.description;
   const usedAmount = req.body.usedAmount;
   const expenseId = req.body.expenseId;
-  const userId = req.body.userId;
+  const userId = req.user;
   const record = 1;
 
   const transaction = new Transaction({

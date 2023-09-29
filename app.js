@@ -79,7 +79,7 @@ mongoose
       }
     });
 
-    app.listen(process.env.PORT || process.env.LISPORT);
+    app.listen(process.env.PORT || 8080);
     console.log("Server running with DB Connection");
   })
   .catch((err) => {
