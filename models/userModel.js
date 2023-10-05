@@ -11,15 +11,20 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-
+  password: {
+    type: String,
+    required: true,
+  },
+  status: {
+    type: String,
+    default: "active",
+  },
   budgets: {
     items: [
       {
-        budgetId: {
-          type: Schema.Types.ObjectId,
-          ref:'Budget',
-          required: true,
-        },
+        type: Schema.Types.ObjectId,
+        ref: "Budget",
+        required: false,
       },
     ],
   },

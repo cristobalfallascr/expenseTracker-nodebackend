@@ -2,16 +2,16 @@ const express = require("express");
 const { body } = require("express-validator"); // using body method from express validator
 
 const budgetsController = require("../Controllers/budgets");
-const expenseData = require("../ZZZZ_Archive/expenses");
+const isAuth = require("../middleware/is-auth");
 
 const router = express.Router();
 
 //////// GET ROUTES
 //GET /budgets/my-budgets
 // router.get("/my-budget", budgetsController.getBudget);
-router.get("/my-budget/:budgetCode", budgetsController.getBudget);
+router.get("/my-budget/:budgetCode", isAuth, budgetsController.getBudget);
 //GET /budgets/add-expense
-router.get("/add-expense", budgetsController.getAddExpense);
+router.get("/add-expense", isAuth, budgetsController.getAddExpense);
 
 //////// POST ROUTES
 //POST /budgets/create-budget

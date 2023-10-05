@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const expenses = [];
+const jwt = require("jsonwebtoken");
 
 const { validationResult } = require("express-validator"); // reads the validation result as configured in the Routes
 
@@ -8,7 +9,7 @@ const Expense = require("../models/expenseModel");
 const Transaction = require("../models/transactionModel");
 
 exports.getBudget = (req, res, next) => {
-  const budgetCode = req.params.budgetCode;
+  const budgetCode = req.params.budgetCode.toLowerCase();
 
   Budget.findOne({ budgetCode: budgetCode })
     .populate("expenseList")
@@ -19,13 +20,25 @@ exports.getBudget = (req, res, next) => {
           searchCode: budgetCode,
         });
       } else {
-        res
-          .status(200)
-          .json({
-            message: "Budget retrieved successfully!",
-            budget: foundBudget,
-          });
+        const token = jwt.sign(
+          {
+            budget: foundBudget.budgetCode,
+          },
+          process.env.SESSION_SECRET,
+          { expiresIn: "1h" }
+        );
+        res.status(200).json({
+          message: "Budget retrieved successfully!",
+          budget: foundBudget,
+          token: token,
+        });
       }
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
     });
   // Budget.findById(req.budget._id)
   //   .populate("expenseList")
@@ -66,7 +79,7 @@ exports.postCreateBudget = (req, res, next) => {
     wordArray.map((word) => {
       let newString = word.substring(0, 2);
       result = budgetCodeString.concat(newString);
-      budgetCodeString = result;
+      budgetCodeString = result.toLowerCase();
     });
     return budgetCodeString;
   };
@@ -107,7 +120,7 @@ exports.postCreateBudget = (req, res, next) => {
       res.status(201).json({
         message: "New Budget created successfully",
         date: createdDate,
-        budget: result._id,
+        budget: result.budgetCode,
       });
     })
     .catch((err) => {
