@@ -13,8 +13,10 @@ if(!authHeader){
   try {
     decodedToken = jwt.verify(token, process.env.SESSION_SECRET);
   } catch (err) {
-    err.statusCode = 500;
-    throw err;
+    const error = new Error("Not authenticated.");
+    error.statusCode = 401;
+    error.message = "Hubo un problema de autenticacion, por favor vuelve a inicar sesión";
+    throw error;
   }
 
   if (!decodedToken) {

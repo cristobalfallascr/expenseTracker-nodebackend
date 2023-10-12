@@ -25,6 +25,7 @@ const store = new mongodbStore({
 //Define routes
 const authRoutes = require("./routes/auth");
 const budgetRoutes = require("./routes/budget");
+const userRoutes = require("./routes/user");
 
 const accessLogStream = fs.createWriteStream(
   path.join(__dirname, "access.log"),
@@ -35,27 +36,6 @@ app.use(compression());
 app.use(morgan("combined", { stream: accessLogStream }));
 
 app.use(bodyParser.json()); // to parse application/json
-
-//Middleware to create a user session (budget session) and save session in mongoDB store, NOT USED for REST API approach
-// app.use(
-//   session({
-//     secret: process.env.SESSION_SECRET,
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: { maxAge: 3600000 },
-//     store: store,
-//   })
-// );
-
-//to save a user in the request
-app.use((req, res, next) => {
-  User.findById("6509a88eebdb6e09dad043b0")
-    .then((user) => {
-      req.user = user;
-      next();
-    })
-    .catch((err) => console.log(err));
-});
 
 // To enable CORS operations
 app.use((req, res, next) => {
@@ -68,7 +48,10 @@ app.use((req, res, next) => {
   next();
 });
 app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
 app.use("/budgets", budgetRoutes);
+
+///Error routes
 app.use((error, req, res, next) => {
   console.log(error);
   const status = error.statusCode || 500;

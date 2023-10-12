@@ -19,15 +19,13 @@ const userSchema = new Schema({
     type: String,
     default: "active",
   },
-  budgets: {
-    items: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Budget",
-        required: false,
-      },
-    ],
-  },
+  budgetList: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Budget",
+      required: false,
+    },
+  ],
 });
 
 module.exports = mongoose.model("User", userSchema);

@@ -5,15 +5,18 @@ const jwt = require("jsonwebtoken");
 const { validationResult } = require("express-validator"); // reads the validation result as configured in the Routes
 
 const Budget = require("../models/budgetModel");
+const User = require("../models/userModel");
 const Expense = require("../models/expenseModel");
 const Transaction = require("../models/transactionModel");
 
 exports.getBudget = (req, res, next) => {
   const budgetCode = req.params.budgetCode.toLowerCase();
+  console.log(budgetCode);
 
-  Budget.findOne({ budgetCode: budgetCode })
+  Budget.findOne({ _id: budgetCode })
     .populate("expenseList")
     .then((foundBudget) => {
+      console.log(foundBudget);
       if (!foundBudget) {
         res.status(404).json({
           message: "No pudimos encontrar un presupesto con tu código...",
@@ -28,7 +31,7 @@ exports.getBudget = (req, res, next) => {
           { expiresIn: "1h" }
         );
         res.status(200).json({
-          message: "Budget retrieved successfully!",
+          message: "Presupuesto encontrado con exito",
           budget: foundBudget,
           token: token,
         });
@@ -97,6 +100,7 @@ exports.postCreateBudget = (req, res, next) => {
   const budgetAmountAssigned = 0;
   const budgetAmountUnassigned = req.body.budgetTotalAmount;
   const budgetAmountAvailable = budgetTotalAmount - budgetAmountUsed;
+  const userId = req.body.userId;
   //Create budget in db
   const budget = new Budget({
     title: title,
@@ -111,16 +115,24 @@ exports.postCreateBudget = (req, res, next) => {
     budgetAmountAssigned: budgetAmountAssigned,
     budgetAmountAvailable: budgetAmountAvailable,
     budgetAmountUnassigned: budgetAmountUnassigned,
-    userId: req.user,
+    userId: userId,
   });
   //Attempt saving budget
   budget
     .save()
     .then((result) => {
-      res.status(201).json({
-        message: "New Budget created successfully",
-        date: createdDate,
-        budget: result.budgetCode,
+      const userId = result.userId;
+      User.updateOne(
+        { _id: userId },
+        {
+          $push: { budgetList: result._id },
+        }
+      ).then((updateResult) => {
+        res.status(201).json({
+          message: "New Budget created successfully",
+          date: createdDate,
+          budget: result.budgetCode,
+        });
       });
     })
     .catch((err) => {
@@ -147,6 +159,7 @@ exports.postAddExpense = (req, res, next) => {
   const availableAmount = budgetedAmount - usedAmount;
   const transactions = 0;
   const budgetId = req.body.budgetId;
+  const userId = req.body.userId;
   const transactionList = [];
 
   //define new budget amount
@@ -161,8 +174,7 @@ exports.postAddExpense = (req, res, next) => {
     transactions: transactions,
     budgetId: budgetId,
     transactionList: transactionList,
-
-    userId: req.user,
+    userId: userId,
   });
 
   expense.save().then((result) => {
@@ -201,9 +213,10 @@ exports.postAddExpense = (req, res, next) => {
 
 //POST a transaction on an expense
 exports.postAddTransation = (req, res, next) => {
-  //Validation of input
+  console.log(req.body);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log(errors.array());
     return res.status(422).json({
       message: "Validation failed",
       errors: errors.array(),
@@ -215,7 +228,7 @@ exports.postAddTransation = (req, res, next) => {
   const description = req.body.description;
   const usedAmount = req.body.usedAmount;
   const expenseId = req.body.expenseId;
-  const userId = req.user;
+  const userId = req.body.userId;
   const record = 1;
 
   const transaction = new Transaction({
@@ -224,7 +237,7 @@ exports.postAddTransation = (req, res, next) => {
     description: description,
     usedAmount: usedAmount,
     expenseId: expenseId,
-    userId: req.user,
+    userId: userId,
   });
 
   transaction.save().then((result) => {

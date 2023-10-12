@@ -20,6 +20,7 @@ router.post(
   [
     body("title").trim().isLength({ min: 5 }),
     body("budgetTotalAmount").notEmpty().isInt(),
+    body("userId").notEmpty(),
   ],
   budgetsController.postCreateBudget
 );
@@ -27,8 +28,9 @@ router.post(
 //POST /budget/add-expense
 router.post(
   "/add-expense",
+  isAuth,
   [
-    body("title").trim().isLength({ min: 5 }),
+    body("title").trim().isLength({ min: 2 }),
     body("budgetedAmount").notEmpty().isInt(),
     // body("usedAmout").notEmpty().isInt(),
     // body("availableAmount").notEmpty().isInt(),
@@ -36,10 +38,14 @@ router.post(
   budgetsController.postAddExpense
 );
 
-//POST /budget/add-transacton
+//POST /budgetsadd-transacton
 router.post(
   "/add-transaction",
-  [body("usedAmount").notEmpty().isInt()],
+  isAuth,
+  [
+    body("title").trim().isLength({ min: 2 }),
+    body("usedAmount").notEmpty().isInt(),
+  ],
   budgetsController.postAddTransation
 );
 
