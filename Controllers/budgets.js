@@ -16,7 +16,7 @@ exports.getBudget = (req, res, next) => {
   Budget.findOne({ _id: budgetCode })
     .populate("expenseList")
     .then((foundBudget) => {
-      console.log(foundBudget);
+      
       if (!foundBudget) {
         res.status(404).json({
           message: "No pudimos encontrar un presupesto con tu código...",
@@ -49,6 +49,23 @@ exports.getBudget = (req, res, next) => {
   //     console.log(budget);
   //     res.status(200).json({ message: "sucess", budget: budget });
   //   });
+};
+
+exports.getExpense = (req, res, next) => {
+  const expenseId = req.params.expenseId;
+  // Find expense by ID
+
+  Expense.findById(expenseId).populate("transactionList").then((foundExpense) => {
+    if (!foundExpense) {
+      return res.status(404).json({ message: "Algo salio mal..." });
+    }
+    else{
+      res.status(200).json({
+        message: "Se encontro el rubro",
+        expense: foundExpense,
+      })
+    }
+  });
 };
 
 exports.getAddExpense = (req, res, next) => {
@@ -185,7 +202,7 @@ exports.postAddExpense = (req, res, next) => {
       const newBudgetAmountAssigned =
         foundBudget.budgetAmountAssigned + parseInt(budgetedAmount);
       const newBudgetAmountUnassigned =
-        foundBudget.budgetTotalAmount - budgetedAmount;
+        foundBudget.budgetTotalAmount - newBudgetAmountAssigned;
 
       Budget.updateOne(
         { _id: budget._id },

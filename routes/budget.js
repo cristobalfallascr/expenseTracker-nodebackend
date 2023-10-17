@@ -12,6 +12,8 @@ const router = express.Router();
 router.get("/my-budget/:budgetCode", isAuth, budgetsController.getBudget);
 //GET /budgets/add-expense
 router.get("/add-expense", isAuth, budgetsController.getAddExpense);
+//Get /budgets/get-expense/:expenseId
+router.get("/get-expense/:expenseId", isAuth, budgetsController.getExpense);
 
 //////// POST ROUTES
 //POST /budgets/create-budget
